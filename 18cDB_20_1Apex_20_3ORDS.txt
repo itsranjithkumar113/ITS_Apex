@@ -1,0 +1,171 @@
+C:\APEX\apex201\apex
+sqlplus
+sys as sysdba
+system
+show pdbs;
+
+alter session set container=XEPDB1;
+
+@apexins.sql SYSAUX SYSAUX temp /i/
+
+show pdbs;
+
+@apxchpwd.sql
+
+user name : ADMIN
+Admin Email : sranjithkumar113@gmail.com
+Ranjith#123
+
+@apex_rest_config.sql
+
+APEX_LISTENER
+APEX_REST_PUBLIC_USER
+
+show pdbs;
+
+alter user APEX_PUBLIC_USER identified by Ranjith#123 account unlock;
+
+close the CMD.
+
+Open new CMD with Admin mode
+
+cd C:\APEX\ords203
+
+java -jar ords.war install advanced
+
+if error found , then install JDK and copy the bin path and put it in enviroment variable(add JAVA_HOME and paste the path , add the copied path in "path" directory)
+
+location : C:\APEX\ords203
+
+Enter number for [1] Basic  [2] TNS  [3] Custom URL [1]: 1
+Enter the name of the database server [localhost]: localhost
+Enter the database listen port [1521]:1521
+Enter 1 to specify the database service name, or 2 to specify the database SID [1] : 1
+Enter the database service name:XEPDB1
+Enter 1 if you want to verify/install Oracle REST Data Services schema or 2 to skip this step [1]:1
+Enter the database password for ORDS_PUBLIC_USER:Ranjith#123
+
+Requires to login with administrator privileges to verify Oracle REST Data Services schema.
+
+Enter the administrator username:sys
+Enter the database password for SYS AS SYSDBA: system
+
+Enter the default tablespace for ORDS_METADATA [SYSAUX]:SYSAUX
+Enter the temporary tablespace for ORDS_METADATA [TEMP]:TEMP
+Enter the default tablespace for ORDS_PUBLIC_USER [USERS]:USERS
+Enter the temporary tablespace for ORDS_PUBLIC_USER [TEMP]:TEMP
+If using Oracle Application Express or migrating from mod_plsql then you must enter 1 [1]:1
+Enter the PL/SQL Gateway database user name [APEX_PUBLIC_USER]: APEX_PUBLIC_USER
+Enter the database password for APEX_PUBLIC_USER:Ranjith#123
+Enter 1 to specify passwords for Application Express RESTful Services 
+	database users (APEX_LISTENER, APEX_REST_PUBLIC_USER) or 2 to skip this step [1]: 1
+
+Enter the database password for APEX_LISTENER:APEX_LISTENER
+Enter the database password for APEX_REST_PUBLIC_USER:APEX_REST_PUBLIC_USER
+
+Enter a number to select a feature to enable: 1
+
+Enter 1 if you wish to start in standalone mode or 2 to exit [1]: 1
+
+Enter the APEX static resources location: (Copy Images folder into ords folder and copy this path and paste) : C:\APEX\ords203\images
+
+Enter 1 if using HTTP or 2 if using HTTPS [1]:1
+Enter the HTTP port [8080]:8080
+
+http://localhost:8080/ords
+
+Adminstrator Login
+
+	ADMIN / Ranjith#123
+	
+	Workspace details
+	
+	ITS_WS1
+	
+
+Access privilege to schemas in SYS Schema:
+--------------------------------------------
+
+GRANT CREATE SESSION, CREATE VIEW, ALTER SESSION, CREATE SEQUENCE TO hr;
+GRANT CREATE SYNONYM, CREATE DATABASE LINK, RESOURCE , UNLIMITED TABLESPACE TO hr;
+
+SELECT * FROM ALL_USERS WHERE USERNAME LIKE 'APEX%';
+
+ALTER SESSION SET CURRENT_SCHEMA = APEX_200100;  
+
+set serveroutput on;
+BEGIN  
+    APEX_INSTANCE_ADMIN.UNRESTRICT_SCHEMA(P_SCHEMA => 'SYSTEM');  
+    COMMIT;  
+END; 
+
+
+
+Project1 : Form_Migration1
+
+
+
+UNINSTALL:
+
+CMD in Admin Mode
+
+cd C:\APEX\apex201\apex
+sqlplus
+sys as sysdba
+system
+show pdbs;
+
+alter session set container=XEPDB1;
+
+col COMP_ID for a15
+col COMP_NAME for a45
+col STATUS for a20
+set lines 100 pages 100
+select COMP_ID,COMP_NAME,STATUS from dba_registry;
+
+COMP_ID COMP_NAME STATUS
+————— ——————————————— ——————–
+CATALOG Oracle Database Catalog Views VALID
+CATPROC Oracle Database Packages and Types VALID
+JAVAVM JServer JAVA Virtual Machine VALID
+XML Oracle XDK VALID
+CATJAVA Oracle Database Java Packages VALID
+APS OLAP Analytic Workspace OPTION OFF
+RAC Oracle Real Application Clusters OPTION OFF
+XDB Oracle XML Database VALID
+OWM Oracle Workspace Manager VALID
+CONTEXT Oracle Text VALID
+ORDIM Oracle Multimedia VALID
+SDO Spatial VALID
+XOQ Oracle OLAP API OPTION OFF
+OLS Oracle Label Security VALID
+APEX Oracle Application Express VALID
+DV Oracle Database Vault VALID
+Query to check whether APEX is being used by the database:
+
+select workspace, view_date, seconds_ago from apex_workspace_activity_log;
+
+Remove Oracle Application Express:-
+
+@?/apex/apxremov.sql
+
+Drop the APEX user if still exists:-
+
+SQL> select username from dba_users where username like '%APEX%';
+
+USERNAME
+—————————————————————————————————-
+APEX_PUBLIC_USER
+APEX_030200
+APEX_040200
+
+drop user APEX_040200 cascade;
+drop user APEX_030200 cascade;
+drop user APEX_PUBLIC_USER cascade;
+drop package sys.wwv_dbms_sql;
+
+Check the invalids and compile using utlrp.sql:-
+
+select count(*) from dba_objects where status=’INVALID’;
+
+@?/rdbms/admin/utlrp.sql
